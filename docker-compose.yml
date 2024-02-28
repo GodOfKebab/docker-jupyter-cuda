@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  jupyter:
+    init: true
+    build: docker/jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ".:/app"
+      - "./.jupyter:/root/.jupyter/"
+    environment:
+      JUPYTER_PORT: 8888
+      HOSTNAME:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    shm_size: 50G
+    command: ["jupyter", "lab", "--NotebookApp.custom_display_url=http://HOSTNAME:8888", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+    hostname: localhost
